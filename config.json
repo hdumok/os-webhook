@@ -11,7 +11,7 @@
     "projects":[
         {
             "appName":"motor_backend2",
-            "workStatus":false,
+            "workStatus":true,
             "workPath":"/home/dev/motor/admin",
             "gitBranch":"develop",
             "pm2AppName":"admin",
