@@ -1,0 +1,19 @@
+{
+  "webpath":"/",
+  "port":5002,
+  "projects":{
+    "ui2.0":{
+      "projectPath":"./app",
+      "commands":[
+          "cd ./app",
+          "git checkout ui2.0",
+          "git reset --hard origin/ui2.0",
+          "git pull",
+          "npm install",
+          "pm2 restart app"
+      ],
+      "pusher":[],
+      "password":"123456"
+    }
+  }
+}
