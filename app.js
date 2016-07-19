@@ -20,13 +20,13 @@ app.post(config.webpath + ':branch', function (req, res, next) {
 	var branch = req.params.branch;
 	var project = config.projects[branch];
 	if (!project) {
-		res.end(500);
+		res.sendStatus(500);
 		return;
 	}
 
 	var hook = JSON.parse(req.body.hook);
 	if (project.password != hook.password) {
-		res.end(500);
+		res.sendStatus(500);
 		return;
 	}
 
@@ -36,7 +36,7 @@ app.post(config.webpath + ':branch', function (req, res, next) {
 
 	logfile.write(
 		`${new Date()}
-		提交人：${pusher.name}
+		提交人：${name}
 		执行：${action}
 		任务id：${id}\n`);
 
@@ -44,23 +44,23 @@ app.post(config.webpath + ':branch', function (req, res, next) {
 		if (err instanceof Error) {
 			logfile.write(
 				`${new Date()}
-				提交人：${pusher.name}
+				提交人：${name}
 				执行：${action}
 				任务id：${id}
 				状态：失败
 				原因：${err}\n`);
-			res.end(500);
+			res.sendStatus(500);
 			return;
 		}
 
 		logfile.write(
 			`${new Date()}
-			提交人：${pusher.name}
+			提交人：${name}
 			执行：${action}
 			任务id：${id}
 			状态：成功\n`);
 	})
-	res.end(200)
+	res.sendStatus(200)
 })
 
 http.createServer(app).listen(app.get('port'), function () {
