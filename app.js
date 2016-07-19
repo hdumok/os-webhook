@@ -10,7 +10,7 @@ var	port = config.port;
 var template = config.template;
 var projects = config.projects;
 
-var	log = fs.createWriteStream('./webhook.log');
+var	log = fs.createWriteStream('./webhook.log',{flags:'a'});
 
 app.use(bodyParser.urlencoded({extended: true}));
 
