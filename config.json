@@ -1,17 +1,29 @@
 {
-  "webpath":"/",
-  "port":5002,
-  "projects":{
-    "ui2.0":{
-      "commands":[
-          "cd /home/dev/motor/app",
-          "git checkout ui2.0",
-          "git reset --hard origin/ui2.0",
-          "git pull",
-          "npm install",
-          "pm2 restart app"
-      ],
-      "password":"123456"
-    }
-  }
+    "port":5001,
+    "template":[
+        "cd workPath",
+        "git checkout gitBranch",
+        "git reset --hard origin/gitBranch",
+        "git pull",
+        "npm install",
+        "pm2 restart pm2AppName"
+    ],
+    "projects":[
+        {
+            "appName":"motor_backend2",
+            "workStatus":false,
+            "workPath":"/home/dev/motor/admin",
+            "gitBranch":"develop",
+            "pm2AppName":"admin",
+            "webhookPassword":"123456"
+        },
+        {
+            "appName":"motor_app_server",
+            "workStatus":true,
+            "workPath":"/home/dev/motor/app",
+            "gitBranch":"ui2.0",
+            "pm2AppName":"app",
+            "webhookPassword":"123456"
+        }
+    ]
 }

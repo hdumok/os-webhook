@@ -5,64 +5,58 @@ var	http = require('http');
 var	fs = require('fs');
 var	app = express();
 
-var	config = require('./config');
-var	logfile = fs.createWriteStream('./webhook.log', {flags: 'a'});
+var config = require('./config.json');
+var	port = config.port;
+var template = config.template;
+var projects = config.projects;
 
-app.set('port', process.env.PORT || config.port);
+var	log = fs.createWriteStream('./webhook.log').write;
 
-app.use(bodyParser.urlencoded({
-	extended: true
-}));
+app.use(bodyParser.urlencoded({extended: true}));
 
-
-app.post(config.webpath + ':branch', function (req, res, next) {
-
-	var branch = req.params.branch;
-	var project = config.projects[branch];
-	if (!project) {
-		res.sendStatus(500);
-		return;
+function format(template, project) {
+	var commands = template.slice(0);
+	for(var i = 0, len=commands.length; i<len; i++){
+		for(var key in project){
+			commands[i] = commands[i].replace(key, project[key]);
+		}
 	}
 
-	var hook = JSON.parse(req.body.hook);
-	if (project.password != hook.password) {
-		res.sendStatus(500);
-		return;
-	}
+	return commands;
+}
 
-	var id = hook.push_data.commits[0].id;
-	var name = hook.push_data.user.name;
-	var action = hook.hook_name;
+projects.map(function (project) {
 
-	logfile.write(
-		`${new Date()}
-		提交人：${name}
-		执行：${action}
-		任务id：${id}\n`);
+	if(!project.workStatus) return;
 
-	exec(project.commands.join(' && '), function (err, out, code) {
-		if (err instanceof Error) {
-			logfile.write(
-				`${new Date()}
-				提交人：${name}
-				执行：${action}
-				任务id：${id}
-				状态：失败
-				原因：${err}\n`);
+	app.post('/' + project.gitBranch, function (req, res, next) {
+
+		var hook = JSON.parse(req.body.hook);
+		if (project.password != hook.password) {
 			res.sendStatus(500);
 			return;
 		}
 
-		logfile.write(
-			`${new Date()}
-			提交人：${name}
-			执行：${action}
-			任务id：${id}
-			状态：成功\n`);
+		var id = hook.push_data.commits[0].id;
+		var name = hook.push_data.user_name;
+		var action = hook.hook_name;
+
+		log(new Date()+'\n提交人:'+name+'\n执行:'+action+'\n任务id：'+id+'\n')
+
+		var commands = format(template, project);
+		exec(commands, function (err) {
+			if (err instanceof Error) {
+				log(new Date()+'\n提交人:'+name+'\n执行:'+action+'\n任务id：'+id+'\n状态：失败\n原因：'+err);
+				res.sendStatus(500);
+				return;
+			}
+
+			log(new Date()+'\n提交人:'+name+'\n执行:'+action+'\n任务id：'+id+'\n状态：成功');
+		})
+		res.sendStatus(200)
 	})
-	res.sendStatus(200)
 })
 
-http.createServer(app).listen(app.get('port'), function () {
-	console.log('服务器启动成功监听端口:' + app.get('port'));
+http.createServer(app).listen(port, function () {
+	console.log('oschina-webhook服务器启动, 端口:' + port);
 });
