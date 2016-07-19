@@ -29,7 +29,8 @@ projects.map(function (project) {
 
 	if(!project.workStatus) return;
 
-	app.post('/' + project.gitBranch, function (req, res, next) {
+	var path = '/' + project.appName + '/' + project.gitBranch;
+	app.post(path, function (req, res, next) {
 
 		var hook = JSON.parse(req.body.hook);
 		if (project.webhookPassword != hook.password) {
@@ -43,14 +44,12 @@ projects.map(function (project) {
 		var commands = format(template, project);
 		exec(commands, function (err) {
 			if (err instanceof Error) {
-				log.write(new Date()+'\n提交人:'+name+'\n分支:'+project.appName+'/'+project.gitBranch+
-					      '\n任务id：'+id+'\n状态：失败\n原因：'+err+'\n\n');
+				log.write(new Date()+'\n提交人:'+name+'\n分支:'+path+'\n任务id：'+id+'\n状态：失败\n原因：'+err+'\n\n');
 				res.sendStatus(500);
 				return;
 			}
 
-			log.write(new Date()+'\n提交人:'+'\n分支:'+project.appName+'/'+project.gitBranch+
-					  '\n任务id：'+id+'\n状态：成功\n\n');
+			log.write(new Date()+'\n提交人:'+'\n分支:'+path+'\n任务id：'+id+'\n状态：成功\n\n');
 		})
 		res.sendStatus(200)
 	})
