@@ -10,7 +10,7 @@ var	port = config.port;
 var template = config.template;
 var projects = config.projects;
 
-var	log = fs.createWriteStream('./webhook.log').write;
+var	log = fs.createWriteStream('./webhook.log');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -32,7 +32,7 @@ projects.map(function (project) {
 	app.post('/' + project.gitBranch, function (req, res, next) {
 
 		var hook = JSON.parse(req.body.hook);
-		if (project.password != hook.password) {
+		if (project.webhookPassword != hook.password) {
 			res.sendStatus(500);
 			return;
 		}
@@ -41,17 +41,17 @@ projects.map(function (project) {
 		var name = hook.push_data.user_name;
 		var action = hook.hook_name;
 
-		log(new Date()+'\n提交人:'+name+'\n执行:'+action+'\n任务id：'+id+'\n')
+		log.write(new Date()+'\n提交人:'+name+'\n执行:'+action+'\n任务id：'+id+'\n')
 
 		var commands = format(template, project);
 		exec(commands, function (err) {
 			if (err instanceof Error) {
-				log(new Date()+'\n提交人:'+name+'\n执行:'+action+'\n任务id：'+id+'\n状态：失败\n原因：'+err);
+				log.write(new Date()+'\n提交人:'+name+'\n执行:'+action+'\n任务id：'+id+'\n状态：失败\n原因：'+err);
 				res.sendStatus(500);
 				return;
 			}
 
-			log(new Date()+'\n提交人:'+name+'\n执行:'+action+'\n任务id：'+id+'\n状态：成功');
+			log.write(new Date()+'\n提交人:'+name+'\n执行:'+action+'\n任务id：'+id+'\n状态：成功');
 		})
 		res.sendStatus(200)
 	})
