@@ -5,8 +5,7 @@
         "git reset --hard origin/gitBranch",
         "git pull",
         "npm install",
-        "npm run doc",
-        "pm2 restart pm2AppName"
+        "npm run doc"
     ],
     "projects":[
         {

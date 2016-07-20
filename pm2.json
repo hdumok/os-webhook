@@ -1,0 +1,9 @@
+{
+    "apps": [{
+        "name"              : "webhook",
+        "script"            : "app.js",
+        "out_file"          : "webhook.log",
+        "merge-logs"        : true,
+        "max_memory_restart": "400M"
+    }]
+}
