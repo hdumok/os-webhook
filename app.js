@@ -42,7 +42,7 @@ projects.map(function (project) {
 		var name = hook.push_data.user_name;
 
 		var commands = format(template, project);
-		exec(commands, function (err) {
+		exec(commands, {cwd:project.workPath}, function (err) {
 			if (err instanceof Error) {
 				log.write(new Date()+'\n提交人:'+name+'\n分支:'+path+'\n任务id：'+id+'\n状态：失败\n原因：'+err+'\n\n');
 				res.sendStatus(500);
