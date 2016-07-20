@@ -6,7 +6,7 @@
         "git pull",
         "npm install",
         "npm run doc",
-        "`pm2 restart pm2AppName`"
+        "pm2 restart pm2AppName"
     ],
     "projects":[
         {
