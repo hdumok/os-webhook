@@ -39,9 +39,9 @@ projects.map(function (project) {
 		var name = hook.push_data.user_name;
 
 		var commands = format(template, project);
+		console.log(commands);
 		exec(commands, {
-				cwd:project.workPath,
-				env:process.env
+				cwd:project.workPath
 			},
 			function (err) {
 				if (err instanceof Error) {
