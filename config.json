@@ -5,7 +5,8 @@
         "git checkout gitBranch",
         "git reset --hard origin/gitBranch",
         "git pull",
-        "npm install",
+        "cd workPath/client && npm install",
+        "cd workPath && npm install",
         "npm run doc"
     ],
     "projects":[
