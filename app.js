@@ -1,16 +1,13 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var	exec = require("child_process").exec;
+var exec = require('child_process').exec;
 var	http = require('http');
-var	fs = require('fs');
 var	app = express();
 
 var config = require('./config.json');
 var	port = config.port;
 var template = config.template;
 var projects = config.projects;
-
-var	log = fs.createWriteStream('./webhook.log',{flags:'a'});
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -47,13 +44,14 @@ projects.map(function (project) {
 				env:process.env
 			},
 			function (err) {
-			if (err instanceof Error) {
-				log.write(new Date()+'\n提交人:'+name+'\n分支:'+path+'\n任务id：'+id+'\n状态：失败\n原因：'+err+'\n\n');
-				return;
-			}
+				if (err instanceof Error) {
+					console.log(new Date()+'\n提交人:'+name+'\n分支:'+path+'\n任务id：'+id+'\n状态：失败\n原因：'+err+'\n\n');
+					return;
+				}
 
-			log.write(new Date()+'\n提交人:'+'\n分支:'+path+'\n任务id：'+id+'\n状态：成功\n\n');
-		})
+				console.log(new Date()+'\n提交人:'+'\n分支:'+path+'\n任务id：'+id+'\n状态：成功\n\n');
+			}
+		)
 		res.sendStatus(200)
 	})
 })
