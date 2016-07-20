@@ -1,6 +1,7 @@
 {
     "port":5001,
     "template":[
+        "cd workPath",
         "git checkout gitBranch",
         "git reset --hard origin/gitBranch",
         "git pull",

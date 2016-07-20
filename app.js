@@ -1,6 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var	exec = require("child_process").exec;
+var	shell = require('shelljs');
 var	http = require('http');
 var	fs = require('fs');
 var	app = express();
@@ -42,11 +42,7 @@ projects.map(function (project) {
 		var name = hook.push_data.user_name;
 
 		var commands = format(template, project);
-		exec(commands, {
-				cwd:project.workPath,
-				env:process.env
-			},
-			function (err) {
+		shell(commands, function (err) {
 			if (err instanceof Error) {
 				log.write(new Date()+'\n提交人:'+name+'\n分支:'+path+'\n任务id：'+id+'\n状态：失败\n原因：'+err+'\n\n');
 				res.sendStatus(500);
