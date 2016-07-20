@@ -2,15 +2,12 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var	shell = require('shelljs');
 var	http = require('http');
-var	fs = require('fs');
 var	app = express();
 
 var config = require('./config.json');
 var	port = config.port;
 var template = config.template;
 var projects = config.projects;
-
-var	log = fs.createWriteStream('./webhook.log',{flags:'a'});
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -42,14 +39,17 @@ projects.map(function (project) {
 		var name = hook.push_data.user_name;
 
 		var commands = format(template, project);
-		shell(commands, function (err) {
-			if (err instanceof Error) {
-				log.write(new Date()+'\n提交人:'+name+'\n分支:'+path+'\n任务id：'+id+'\n状态：失败\n原因：'+err+'\n\n');
+		console.error(commands)
+		shell.exec(commands, function (code, output) {
+			console.log('Exit code:', code);
+			console.log('Program output:', output);
+			if (code != 0) {
+				console.log(new Date()+'\n提交人:'+name+'\n分支:'+path+'\n任务id：'+id+'\n状态：失败\n原因：'+err+'\n\n');
 				res.sendStatus(500);
 				return;
 			}
 
-			log.write(new Date()+'\n提交人:'+'\n分支:'+path+'\n任务id：'+id+'\n状态：成功\n\n');
+			console.log(new Date()+'\n提交人:'+'\n分支:'+path+'\n任务id：'+id+'\n状态：成功\n\n');
 		})
 		res.sendStatus(200)
 	})

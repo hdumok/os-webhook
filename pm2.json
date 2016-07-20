@@ -1,0 +1,14 @@
+{
+    "apps": [
+        {
+            "name": "webhook",
+            "script": "app.js",
+            "instances": 1,
+            "watch": false,
+            "out_file": "webhook.log",
+            "min_uptime": "30s",
+            "max_memory_restart": "1G",
+            "autorestart": true
+        }
+    ]
+}
