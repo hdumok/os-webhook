@@ -40,18 +40,14 @@ projects.map(function (project) {
 
 		var commands = format(template, project);
 		console.log(commands);
-		exec(commands, {
-				cwd:project.workPath
-			},
-			function (err) {
-				if (err instanceof Error) {
-					console.log(new Date()+'\n提交人:'+name+'\n分支:'+path+'\n任务id：'+id+'\n状态：失败\n原因：'+err+'\n\n');
-					return;
-				}
-
-				console.log(new Date()+'\n提交人:'+'\n分支:'+path+'\n任务id：'+id+'\n状态：成功\n\n');
+		exec(commands, function (err) {
+			if (err instanceof Error) {
+				console.log(new Date()+'\n提交人:'+name+'\n分支:'+path+'\n任务id：'+id+'\n状态：失败\n原因：'+err+'\n\n');
+				return;
 			}
-		)
+
+			console.log(new Date()+'\n提交人:'+'\n分支:'+path+'\n任务id：'+id+'\n状态：成功\n\n');
+		})
 		res.sendStatus(200)
 	})
 })
