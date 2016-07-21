@@ -40,7 +40,7 @@ projects.map(function (project) {
 
 		var commands = format(template, project);
 		console.log(commands);
-		exec(commands, function (err) {
+		exec(commands, {maxBuffer: 50*1024*1024}, function (err) {
 			if (err instanceof Error) {
 				console.log(new Date()+'\n提交人:'+name+'\n分支:'+path+'\n任务id：'+id+'\n状态：失败\n原因：'+err+'\n\n');
 				return;
