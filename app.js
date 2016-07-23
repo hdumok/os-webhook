@@ -36,7 +36,7 @@ projects.map(function (project) {
 		}
 
 		var id = hook.push_data.commits[0].id;
-		var name = hook.push_data.user_name;
+		var name = hook.push_data.user.name;
 
 		var commands = format(template, project);
 		console.log(commands);
